@@ -1,0 +1,15 @@
+login.php - This script is responsible for verifying a users login credentials. It presents the user with an HTML form that requires, among other things, a username and password, which must be entered in the form for validation. The script also starts or opens a session for the user upon successful login.
+logout.php - Simply logs a user out of the application and terminates any sessions that were created for the user.
+register.php - Adds new users to our site.
+activate.php - This script activates a new user’s account.
+forgot_pass.php - Resets a forgotten password.
+numgen.php - Generates a verification code for the login form.
+
+remove image upload					x
+change authorization code				x
+login with email					x
+update captcha						x
+login/logout each pg					x
+use cookies
+
+fix password

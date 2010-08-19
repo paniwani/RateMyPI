@@ -1,0 +1,9 @@
+CREATE TABLE users (
+  uid tinyint(4) NOT NULL auto_increment,
+  uname varchar(20) NOT NULL,
+  upass varchar(32) default NULL,
+  email varchar(30) NOT NULL,
+  level varchar(6) NOT NULL,
+  active tinyint(1) NOT NULL,
+  PRIMARY KEY (uid)
+);
