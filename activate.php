@@ -1,42 +1,45 @@
 <?php
 include "connect.php";
-if(isset($_GET['u'])){
-//make sure that 'u' is numeric
-	if(is_numeric($_GET['u'])){
-		$u=$_GET['u'];
-	} else{
-		$u=0;
+
+$valid = FALSE;
+
+if(isset($_GET['uid']) && isset($_GET['ukey'])) {						//check if uid and ukey are set
+	if (ctype_digit($_GET['uid']) && ctype_alnum($_GET['ukey'])) {		//check if uid and ukey are numbers and alphanum, respectively
+		$valid = TRUE;
 	}
 }
 
-if(isset($_GET['a_code'])){
-	$code=$_GET['a_code'];
-} else{
-	$code=0;
-}
+if ($valid) {
+	$uid = mysql_real_escape_string($_GET['uid']);
+	$ukey = mysql_real_escape_string($_GET['ukey']);
 
-//now we check to see if the recieved values are correct
+	//check if user is in database
+	$sql = "SELECT active FROM users WHERE uid ='".$uid."' AND ukey='".$ukey."'";
 
-if(($u > 0) && ($code == md5(1))){
-//now activate the user
+	if(!$res = mysql_query($sql)){
+		die("User not found." . mysql_error());
+	} else{
+		if (mysql_num_rows($res) == 1) {
+			$row = mysql_fetch_assoc($res);
+			
+			//check if user is already active
+			if ($row['active'] == 0) {
+				//make user active
+				$sql2="UPDATE users SET active='1' WHERE uid = '".$uid."'";
+				$res2 = mysql_query($sql2) or die(mysql_error());
 
-$sql="UPDATE users SET active='1' WHERE uid = '".$u."'";
-
-$res = mysql_query($sql) or die(mysql_error());
-
-if(mysql_affected_rows() == 1){ //update successful
-echo "Your account is now active. You can proceed and log in.";
-}else{
-echo "Your account could not be activated. Please check the link or contact the site admin";
-
-}
-
-}else{
-
-//redirect the user to a page that you want
-//here i just redirect the user to the register page.
-//its also a good idea to remove the user details, since the user might want to re-register
-header("location:register.php");
+				if (mysql_affected_rows() == 1) { //update successful
+					echo "Your account is now active. You can proceed and log in.";
+				} else {
+					echo "Your account could not be activated. Please check the link or contact the site admin.";
+				}
+			} else {
+				echo "Your account is already active.";
+			}
+		}
+	}
+} else {
+	echo "Error during activation. Please check the link or contact the site admin.";
 }
 ?>
 

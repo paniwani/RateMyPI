@@ -27,7 +27,7 @@ $msg .="Invalid password.<br>";
 
 if(empty($msg)){
 
-$sql = "SELECT uid,uname,level FROM users WHERE email ='".$_POST['email']."'";
+$sql = "SELECT uid,uname,ukey,level FROM users WHERE email ='".$_POST['email']."'";
 $sql .= "AND upass ='".md5($_POST['upass'])."' AND active='1'";		//ensure user is active
 
 if(!$res = mysql_query($sql)){
@@ -38,18 +38,21 @@ if (mysql_num_rows($res) == 1) {
 $row = mysql_fetch_assoc($res);
 
          // the user name and password match, 
-        $_SESSION['id'] = $row['uid'];
+        $_SESSION['uid'] = $row['uid'];
 		$_SESSION['uname'] = $row['uname'];
+		$_SESSION['ukey'] = $row['ukey'];
 		$_SESSION['level'] = $row['level'];
 		$_SESSION['email'] = $_POST['email'];
 		unset($_SESSION['randval']);
 		unset($_SESSION['securimage_code_value']);
 		
-		// create cookie
-		setcookie('rmp-cookie', $_POST['email'], 60*60*24*30+time() ); //expire in 1 month
+		//create cookie
+		if (isset($_POST['remember'])) {
+			setcookie('rmp-cookie', $row['uid']." ".$row['ukey'], 60*60*24*30+time() ); //expire in 1 month
+		}
 		
-         //Now go to the main page
-         header('location: main.php');
+        //Now go to the main page
+        header('location: main.php');
 }else{
 
 $msg = "Your login details did not match";
@@ -121,6 +124,13 @@ function checkform(pform1){
 			?>"></td>
             <td class="passcheck"><a href="forgot_pass.php">Forgot your password?</a>|<a href="register.php">Register</a> </td>
           </tr>
+		  
+		  <tr>
+			<td>Remember me?</td>
+			<td><input type="checkbox" name="remember" id="remember" value="TRUE" /></td>
+			<td>&nbsp;</td>
+		  </tr>
+		  
           <tr>
             <td>&nbsp;</td>
             <td><input type="submit" name="submit" value="Login"></td>
@@ -136,8 +146,10 @@ function checkform(pform1){
 </table>
 
 <pre>
-<?php var_dump($_SESSION); 
-	  var_dump($_COOKIE);
+<?php
+//debug
+echo "POST:<br/>";
+var_dump($_POST);
 ?>
 </pre>
 

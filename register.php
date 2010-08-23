@@ -66,8 +66,9 @@ $uname=mysql_real_escape_string($_POST['uname']);
 $level="normal";
 $upass=mysql_real_escape_string($_POST['pass1']);
 $email=mysql_real_escape_string($_POST['email']);
+$ukey=md5(uniqid());
 
-$sql_ins="INSERT INTO users(uname,upass,email,level,active) values ('".$uname."','".md5($upass)."','".$email."','".$level."','".$active."')";
+$sql_ins="INSERT INTO users(uname,upass,ukey,email,level,active) values ('".$uname."','".md5($upass)."','".$ukey."','".$email."','".$level."','".$active."')";
 $result = mysql_query($sql_ins);
 
 /* SECTION 3: User Notification */
@@ -77,8 +78,7 @@ $msg = "Your registration information has been processed. Please check your emai
 $subject="Registration at RateMyPI";
 
 $emsg = "Thank you for registering with us.<br>The next step is for you to activate your account. To do this, simply click on the link below:\n\n";
-$actcode = md5(1); //user must use this code to become active
-$emsg .="http://localhost/login/activate.php?u=".mysql_insert_id(). "&a_code=".$actcode;
+$emsg .="http://localhost/RateMyPI/activate.php?uid=".mysql_insert_id(). "&ukey=".$ukey;
 //now send the email
 if(send_email($email,$subject,$emsg)){
 
