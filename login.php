@@ -1,6 +1,7 @@
 <?php
-//start the session
-include('connect.php');
+session_start();
+require("utils.php");
+require("db.php");
 
 //check if the form has been submitted
 if(isset($_POST['submit'])){
@@ -145,13 +146,7 @@ function checkform(pform1){
   </tr>
 </table>
 
-<pre>
-<?php
-//debug
-echo "POST:<br/>";
-var_dump($_POST);
-?>
-</pre>
+<?php //include("debug.php");?>
 
 </body>
 </html>

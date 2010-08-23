@@ -1,8 +1,7 @@
 <?php
-require('db.php');
-
-//check if user is logged in
+//checks if user is logged in
 session_start();
+require("db.php");
 
 $login = FALSE;
 $msg = '';
@@ -40,6 +39,7 @@ if (isset($uid) && isset($ukey)) {
 			$_SESSION['email'] 		= 		$row['email'];
 			
 			echo "Logged in: " . $_SESSION['email']; 
+			$login = TRUE;
 		}
 	}
 } else {
@@ -47,6 +47,4 @@ if (isset($uid) && isset($ukey)) {
 }
 ?>
 
-<pre>
-SESSION: <?php var_dump($_SESSION); ?>
-</pre>
+<?php //include("debug.php");?>

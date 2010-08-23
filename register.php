@@ -1,5 +1,7 @@
 <?php
-include "connect.php";
+session_start();
+require("utils.php");
+require("db.php");
 
 if(isset($_POST['reg'])){
 $msg="";
@@ -171,7 +173,7 @@ return true
   <tr>
 	<td><div align="left">Enter Number</td>
 	<td><input name="number" type="text" id="number" size="40">
-	&nbsp;&nbsp;<img src="../securimage/securimage_show.php?sid=<?php echo md5(uniqid(time())); ?>" id="image" align="absmiddle" /></td>
+	&nbsp;&nbsp;<img src="securimage/securimage_show.php?sid=<?php echo md5(uniqid(time())); ?>" id="image" align="absmiddle" /></td>
   </tr> 
   
   <tr>
@@ -187,11 +189,7 @@ return true
   </tr>
 </table>
 
-<pre>
-<?php var_dump($_SESSION); 
-	  var_dump($_POST);
-?>
-</pre>
+<?php include("debug.php");?>
 
 </body>
 <!-- InstanceEnd --></html>

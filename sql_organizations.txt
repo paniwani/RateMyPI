@@ -1,0 +1,7 @@
+CREATE TABLE organizations (
+  oid tinyint(4) NOT NULL auto_increment,
+  name varchar(20) NOT NULL,
+  PRIMARY KEY (oid)
+);
+
+INSERT INTO organizations VALUES (1, "NIH");
