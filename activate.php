@@ -1,5 +1,5 @@
 <?php
-include "connect.php";
+include "db.php";
 
 $valid = FALSE;
 
