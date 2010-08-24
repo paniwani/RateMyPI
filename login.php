@@ -1,7 +1,7 @@
 <?php
 session_start();
-require("utils.php");
 require("db.php");
+require("utils.php");
 
 //check if the form has been submitted
 if(isset($_POST['submit'])){

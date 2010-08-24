@@ -1,6 +1,7 @@
 <?php
 //after user click on an organization, find and show PIs
-require("checklogin.php");
+session_start();
+require("db.php");
 ?>
 <html>
 <head>
@@ -11,9 +12,13 @@ require("checklogin.php");
 $msg ="";
 
 if (isset($_GET['oid'])) {
-	$oid = mysql_real_escape_string($_GET['oid']);
+
+	require("checklogin.php");
 	
 	//get organization info
+
+	$oid = mysql_real_escape_string($_GET['oid']);
+	
 	$sql = "SELECT oid,name,city,region FROM organizations WHERE oid ='".$oid."'";
 	
 	if(!$res = mysql_query($sql)){
@@ -28,7 +33,6 @@ if (isset($_GET['oid'])) {
 			$ORG['region'] = $row['region'];
 		}
 	}
-	
 	
 	//create letter index
 	$letter = isset($_GET['letter']) ? $_GET['letter'] : "A";
@@ -81,7 +85,7 @@ if ($count > 0) {
 		<?php
 			for ($i = 0; $i < $count; $i++) {
 				echo "<tr>";
-				echo "<td>".$lname[$i].", ".$fname[$i]."</td>";
+				echo "<td><a href=\"showratings.php?pid=".$pid[$i]."\">".$lname[$i].", ".$fname[$i]."</a></td>";
 				echo "<td>".$department[$i]."</td>";
 				echo "<td>".$nratings[$i]."</td>";
 				echo "<td>". ($th[$i] + $tc[$i])/2 ."</td>";
@@ -103,8 +107,6 @@ if ($count > 0) {
 	}
 
 	echo "<br/><br />Oops, we found ".$numpis." PIs from ".$ORG['name'].", none of which have a last name starting with the letter ".$letter.".<br/><br />Click on another letter to continue your search or <a href=\"addpi.php?oid=".$oid."\">add a PI</a> to rate them.";
-
-
 }
 
 

@@ -1,7 +1,5 @@
 <?php
 //checks if user is logged in
-session_start();
-require("db.php");
 
 $login = FALSE;
 $msg = '';
@@ -13,7 +11,7 @@ if ( isset($_SESSION['uid']) && isset($_SESSION['ukey'])) {
 } else {	
 	//check cookie
 	if (isset($_COOKIE['rmp-cookie'])) {
-		$data = explode($_COOKIE['rmp-cookie']);
+		$data = explode(" ", $_COOKIE['rmp-cookie']);
 		$uid = $data[0];
 		$ukey = $data[1];
 	}
