@@ -13,3 +13,12 @@ login/logout each pg					x
 use cookies
 
 fix password
+
+oid - organization id
+pid - PI id
+rid - rating id
+uid - user id
+
+Questions:
+
+- PI belongs to multiple organizations

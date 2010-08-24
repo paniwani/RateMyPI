@@ -5,21 +5,9 @@ require("checklogin.php");
 $msg = "";
 
 if(isset($_GET['submit'])){
-
-	$org = mysql_real_escape_string($_GET['organization']);
-
-	//find organization id based on query
-	$sql = "SELECT oid,name FROM organizations WHERE name ='".$org."' OR name = '".strtolower($org)."' OR name = '".strtoupper($org)."'";
-
-	if(!$res = mysql_query($sql)){
-		$msg .= mysql_error();
-	} else {
-		if (mysql_num_rows($res) == 1) {	// org found
-			$row = mysql_fetch_assoc($res);
-			
-			//send user to next pg with org id and name
-			header("location: selectpi.php?oid=".$row['oid']."&name=".$row['name']);
-		}
+	if (isset($_GET['organization'])) {
+		//send user to next page with search query
+		header("location: search.php?org_query=".$_GET['organization']);
 	}
 }
 
