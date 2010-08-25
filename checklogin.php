@@ -43,6 +43,9 @@ if (isset($uid) && isset($ukey)) {
 } else {
 	echo "You are not logged in.<br />";
 }
+
+//destroy temp vars except for $login
+unset($uid,$ukey,$data,$sql,$res,$row);
 ?>
 
 <?php //include("debug.php");?>

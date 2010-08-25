@@ -1,3 +1,8 @@
+DROP TABLE organizations;
+DROP TABLE pis;
+DROP TABLE ratings;
+DROP TABLE users;
+
 CREATE TABLE users (
   uid tinyint(4) NOT NULL auto_increment,
   uname varchar(20) NOT NULL,
@@ -39,8 +44,8 @@ INSERT INTO ratings VALUES (1,"2010-08-24",1,1,4,3,4,3,"He was cool.");
 
 CREATE TABLE pis (
   pid tinyint(4) NOT NULL auto_increment,
+  uid tinyint(4) NOT NULL,
   oid tinyint(4) NOT NULL,
-  location varchar(20) NOT NULL,
   department varchar(20) NOT NULL,
   fname varchar(20) NOT NULL,
   lname varchar(20) NOT NULL,
@@ -48,7 +53,8 @@ CREATE TABLE pis (
   total_helpfulness float NOT NULL,
   total_clarity float NOT NULL,
   nratings tinyint(4) NOT NULL,
+  active tinyint(1) NOT NULL,
   PRIMARY KEY (pid)
 );
 
-INSERT INTO pis VALUES (1,1,"Bethesda","BME","John","Doe","2.3","3.4","4.2","15");
+INSERT INTO pis VALUES (1,1,1,"BME","John","Doe","2.3","3.4","4.2","15","1");
