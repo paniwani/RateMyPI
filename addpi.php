@@ -2,6 +2,79 @@
 //add pi
 session_start();
 require("db.php");
+require("checklogin.php");
+
+//user must be logged in
+if (!$login):
+	echo "not logged in!";
+	//header("location: login.php");
+elseif (!isset($_POST['submit']) && !isset($_GET['oid'])):
+	echo "didnt speciy oid!";
+	//header("location: main.php");
+else:
+	
+$msg = "";
+
+//user submitted form
+if (isset($_POST['submit'])) {
+	$oid = mysql_real_escape_string($_POST['oid']);
+	$department = mysql_real_escape_string($_POST['department']);
+	$fname = mysql_real_escape_string($_POST['fname']);
+	$lname = mysql_real_escape_string($_POST['lname']);
+	
+	//ensure that the pi isn't already in the db
+	$sql = "SELECT oid,department,fname,lname FROM pis WHERE ";
+	$sql .= "oid='".$oid."' AND department='".$department."' AND fname='".$fname."' AND lname='".$lname."'";
+	
+	$res = mysql_query($sql) or die(mysql_error());
+
+	if (mysql_affected_rows() == 1) { //update successful
+		$msg = "The PI is already in the database.<br />";
+	} else {
+	
+		//add the pi (inactive)
+		$sql = "INSERT INTO pis (uid,oid,department,fname,lname,active) VALUES ('";
+		$sql .= $_SESSION['uid']."','".$oid."','".$department."','".$fname."','".$lname."','0')";
+		
+		$res = mysql_query($sql) or die(mysql_error());
+
+		if (mysql_affected_rows() == 1) { //update successful
+			$msg = "The PI will be added pending review. Thanks for your help!<br />";
+			$msg .= "Back to Organization: <a href=\"selectpi.php?oid=1\">".$_POST['name']."</a><br />";
+			$msg .= "<a href=\"main.php\">Home</a>";
+		} else {
+			$msg .= "The PI could not be added. Please retry or contact the site admin.";
+		}	
+	}	
+	
+} else {
+	if (isset($_GET['oid'])) {
+		//get organization info
+
+		$oid = mysql_real_escape_string($_GET['oid']);
+		
+		$sql = "SELECT oid,name,city,region FROM organizations WHERE oid ='".$oid."'";
+		
+		if(!$res = mysql_query($sql)){
+			$msg .= "Error reaching database. " . mysql_error();
+		} else {
+			if (mysql_num_rows($res) == 1) {
+				$row = mysql_fetch_assoc($res);
+				/*
+				$ORG['oid'] = $row['oid'];
+				$ORG['name'] = $row['name'];
+				$ORG['city'] = $row['city'];
+				$ORG['region'] = $row['region'];
+				*/
+				
+				$ORG = $row;
+			}
+		}
+	}
+}
+
+endif; //end login and oid check
+
 ?>
 
 <html>
@@ -32,75 +105,28 @@ function checkform(pform1){
 </head>
 
 <body>
-<?php
-require("checklogin.php");
 
-//user must be logged in to add pi
-if ($login):
+<?php 
 
-$msg = "";
+echo $msg;
 
-if (isset($_POST['submit'])) {
-	$oid = mysql_real_escape_string($_POST['oid']);
-	$department = mysql_real_escape_string($_POST['department']);
-	$fname = mysql_real_escape_string($_POST['fname']);
-	$lname = mysql_real_escape_string($_POST['lname']);
-	
-	//add the pi (inactive)
-	$sql = "INSERT INTO pis (uid,oid,department,fname,lname,active) VALUES (";
-	$sql .= $_SESSION['uid'].",".$oid.",".$department.",".$fname.",".$lname.",0";
-	
-	$res = mysql_query($sql) or die(mysql_error());
-
-	if (mysql_affected_rows() == 1) { //update successful
-		echo "The PI will be added pending review. Thanks for your help!";
-	} else {
-		echo "The PI could not be added. Please retry or contact the site admin.";
-	}	
-} else {
-	if (isset($_GET['oid'])) {
-		//get organization info
-
-		$oid = mysql_real_escape_string($_GET['oid']);
-		
-		$sql = "SELECT oid,name,city,region FROM organizations WHERE oid ='".$oid."'";
-		
-		if(!$res = mysql_query($sql)){
-			$msg .= "Error reaching database. " . mysql_error();
-		} else {
-			if (mysql_num_rows($res) == 1) {
-				$row = mysql_fetch_assoc($res);
-				
-				$ORG['oid'] = $row['oid'];
-				$ORG['name'] = $row['name'];
-				$ORG['city'] = $row['city'];
-				$ORG['region'] = $row['region'];
-			}
-		}
-	} else {	//user reached pg w/o oid specified
-		header("location:");
-	}
-}
+if (!isset($_POST['submit'])): 
 
 ?>
 
-School: <?=$ORG['name']?><br />
-<?=$ORG['city']?>,<?=$ORG['region']?><br /><br />
+Organization: <?=$ORG['name']?><br />
+<?=$ORG['city']?>, <?=$ORG['region']?><br /><br />
 
 <form name="form1" method="post" action="addpi.php" onSubmit="return checkform(this)">
-First Name: <input type="text" name="fname" id="fname" size="50" value="<?=$_POST['fname']?>" /><br />
-Last Name: <input type="text" name="lname" id="lname" size="50" value="<?=$_POST['lname']?>" /><br />
-Department: <input type="text" name="department" id="department" size="50" value="<?=$_POST['department']?>" /><br />
-<input type="hidden" name="oid" id="oid" value="<?=$ORG['oid']?>">
+First Name: <input type="text" name="fname" id="fname" size="50" /><br />
+Last Name: <input type="text" name="lname" id="lname" size="50" /><br />
+Department: <input type="text" name="department" id="department" size="50" /><br />
+<input type="hidden" name="oid" id="oid" value="<?=$ORG['oid']?>" />
+<input type="hidden" name="name" id="name" value="<?=$ORG['name']?>" />
 <input type="submit" name="submit" id="submit" value="Add PI">
 </form>
 
-<?php
-else: // not logged in
-	echo "You must be <a href=\"login.php\">logged in</a> to add a PI.";
-endif;
-?>
-
+<?php endif;?>
 
 </body>
 

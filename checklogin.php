@@ -36,12 +36,12 @@ if (isset($uid) && isset($ukey)) {
 			$_SESSION['level'] 		= 		$row['level'];
 			$_SESSION['email'] 		= 		$row['email'];
 			
-			echo "Logged in: " . $_SESSION['email']; 
+			//echo "Logged in: " . $_SESSION['email']; 
 			$login = TRUE;
 		}
 	}
 } else {
-	echo "You are not logged in.<br />";
+	//echo "You are not logged in.<br />";
 }
 
 //destroy temp vars except for $login

@@ -1,7 +1,14 @@
 <?php
-//after user click on an organization, find and show PIs
+//after user clicks on a PI, show all ratings
 session_start();
 require("db.php");
+require("checklogin.php");
+
+if (!isset($_GET['pid'])):
+	//error sending data, return to main pg
+	header("location: main.php");
+else:
+
 ?>
 <html>
 <head>
@@ -20,35 +27,28 @@ function getQuality($h,$c) {
 
 $msg = "";
 
-if (isset($_GET['pid'])) {
-	$pid = mysql_real_escape_string($_GET['pid']);
+$pid = mysql_real_escape_string($_GET['pid']);
 
-	//find all ratings from this PI
-	$sql = "SELECT rid,rdate,easiness,helpfulness,clarity,interest,comment FROM ratings WHERE pid='".$pid."'";
-	
-	if(!$res = mysql_query($sql)){
-		$msg .= mysql_error();
-	} else {
-		$count = 0;
-		
-		while($row = mysql_fetch_array($res)) {
-			$rid[$count] 			= 		$row['rid'];
-			$rdate[$count] 			= 		$row['rdate'];
-			$easiness[$count]		=		$row['easiness'];
-			$helpfulness[$count]	=		$row['helpfulness'];
-			$clarity[$count]		=		$row['clarity'];
-			$interest[$count]		=		$row['interest'];
-			$comment[$count]		=		$row['comment'];
-			
-			$count++;
-		}
-	}
+//find all ratings from this PI
+$sql = "SELECT rid,rdate,easiness,helpfulness,clarity,interest,comment FROM ratings WHERE pid='".$pid."'";
+
+if(!$res = mysql_query($sql)){
+	$msg .= mysql_error();
 } else {
-	//error sending data, return to main pg
-	header("location: main.php");
+	$count = 0;
+	
+	while($row = mysql_fetch_array($res)) {
+		$rid[$count] 			= 		$row['rid'];
+		$rdate[$count] 			= 		$row['rdate'];
+		$easiness[$count]		=		$row['easiness'];
+		$helpfulness[$count]	=		$row['helpfulness'];
+		$clarity[$count]		=		$row['clarity'];
+		$interest[$count]		=		$row['interest'];
+		$comment[$count]		=		$row['comment'];
+		
+		$count++;
+	}
 }
-
-require("checklogin.php");
 
 if ($count > 0) {
 ?>
@@ -82,6 +82,9 @@ if ($count > 0) {
 	echo "There are 0 ratings for this PI. Add one.";
 }
 
+echo $msg;
+
 ?>
 </body>
 </html>
+<?php endif; //end pid check ?>
