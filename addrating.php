@@ -6,49 +6,41 @@ require("checklogin.php");
 
 //user must be logged in
 if (!$login):
-	echo "not logged in!";
-	//header("location: login.php");
+	//echo "not logged in!";
+	header("location: login.php");
 elseif (!isset($_POST['submit']) && !isset($_GET['pid'])):
-	echo "didnt speciy oid!";
-	//header("location: main.php");
+	//echo "didnt speciy pid!";
+	header("location: main.php");
 else:
 	
 $msg = "";
+$showForm = FALSE;
 
 //user submitted form
 if (isset($_POST['submit'])) {
 	$pid = mysql_real_escape_string($_POST['pid']);
 	
-	//CHANGE---------------
-	
-	/*
-	//ensure that the pi isn't already in the db
-	$sql = "SELECT oid,department,fname,lname FROM pis WHERE ";
-	$sql .= "oid='".$oid."' AND department='".$department."' AND fname='".$fname."' AND lname='".$lname."'";
+	//add the rating
+	$sql = "INSERT INTO ratings (rdate,uid,pid,oid,easiness,helpfulness,clarity,interest,comment,active) VALUES (";
+	$sql .= "CURDATE(), '".$_SESSION['uid']."','".$pid."','".$_POST['oid']."','".$_POST['easiness']."','".$_POST['helpfulness']."','".$_POST['clarity']."','".$_POST['interest']."','".$_POST['comments']."','0')";
 	
 	$res = mysql_query($sql) or die(mysql_error());
 
 	if (mysql_affected_rows() == 1) { //update successful
-		$msg = "The PI is already in the database.<br />";
-	} else {
-	
-		//add the pi (inactive)
-		$sql = "INSERT INTO pis (uid,oid,department,fname,lname,active) VALUES ('";
-		$sql .= $_SESSION['uid']."','".$oid."','".$department."','".$fname."','".$lname."','0')";
+		$msg = "The rating will be added pending review. Thanks for your help!<br />";
+		$msg .= "Organization: <a href=\"selectpi.php?oid=".$_POST['oid']."\">".$_POST['name']."</a><br />";
 		
-		$res = mysql_query($sql) or die(mysql_error());
-
-		if (mysql_affected_rows() == 1) { //update successful
-			$msg = "The PI will be added pending review. Thanks for your help!<br />";
-			$msg .= "Back to Organization: <a href=\"selectpi.php?oid=1\">".$_POST['name']."</a><br />";
-			$msg .= "<a href=\"main.php\">Home</a>";
-		} else {
-			$msg .= "The PI could not be added. Please retry or contact the site admin.";
-		}	
+	} else {
+		$msg .= "The PI could not be added. Please retry or contact the site admin.";
 	}	
-	*/
 	
 } else {
+	//check the following
+	// pid is set
+	// PI is found
+	// PI is active
+	// User hasn't already rated this PI
+	
 	if (isset($_GET['pid'])) {
 		//get PI info
 		$pid = mysql_real_escape_string($_GET['pid']);
@@ -62,26 +54,47 @@ if (isset($_POST['submit'])) {
 			if (mysql_num_rows($res) == 1) {	//PI found
 				$row = mysql_fetch_assoc($res);
 				
-				//ensure PI is active
 				if ($row['active'] == 0) {
-					$msg .= "PI is pending approval. Please check back later.</br>";
-				} else {
-					$PI = $row;
+					$msg .= "PI is pending approval.<br />Please check back later.</br>";
+				} else {						//PI active
+						
+					//ensure that user hasn't already rated this PI
+					$sql = "SELECT pid,rdate,active FROM ratings WHERE uid='".$_SESSION['uid']."' AND pid='".$pid."'";
+					
+					$res = mysql_query($sql) or die(mysql_error());
+
+					if (mysql_affected_rows() == 1) { //old rating
+						$row = mysql_fetch_assoc($res);
+						$msg = "You have already rated this PI on ".$row['rdate'].".<br />Status: ";
+						
+						if ($row['active']) {
+							$msg .= "Approved.<br />See it <a href=\"showratings.php?pid=".$pid.">here</a>.";
+						} else {
+							$msg .= "Pending Approval.<br />Please check back later.";
+						}
+					} else {	//new rating
+				
+						$PI = $row;
+						
+						//get organization info
+						$oid = mysql_real_escape_string($PI['oid']);
+						
+						$sql = "SELECT oid,name,city,region FROM organizations WHERE oid ='".$oid."'";
+						
+						if(!$res = mysql_query($sql)){
+							$msg .= "Error reaching database. " . mysql_error();
+						} else {
+							if (mysql_num_rows($res) == 1) {
+								$row = mysql_fetch_assoc($res);
+								$ORG = $row;
+								
+								$showForm = TRUE;
+							}
+						}
+					}
 				}
-			}
-		}
-	
-		//get organization info
-		$oid = mysql_real_escape_string($PI['oid']);
-		
-		$sql = "SELECT oid,name,city,region FROM organizations WHERE oid ='".$oid."'";
-		
-		if(!$res = mysql_query($sql)){
-			$msg .= "Error reaching database. " . mysql_error();
-		} else {
-			if (mysql_num_rows($res) == 1) {
-				$row = mysql_fetch_assoc($res);
-				$ORG = $row;
+			} else {	//PI not found
+				$msg = "PI not found.<br />Return <a href=\"main.php\">Home</a>";
 			}
 		}
 	}
@@ -108,21 +121,9 @@ function charCounter() {
 }
 
 function checkform(pform1){
-	if(pform1.fname.value==""){
-		alert("Please enter a first name");
-		pform1.fname.focus();
-		return false;
-	}
-	
-	if(pform1.lname.value==""){
-		alert("Please enter a last name");
-		pform1.lname.focus();
-		return false;
-	}
-	
-	if(pform1.department.value==""){
-		alert("Please enter a department");
-		pform1.department.focus();
+	if(pform1.comments.value=="" || pform1.comments.value == "Enter Comments Here"){
+		alert("Please enter comments.");
+		pform1.comments.focus();
 		return false;
 	}
 	
@@ -145,7 +146,7 @@ function resetText() {
 
 echo $msg;
 
-if (!isset($_POST['submit'])): 
+if ($showForm): 
 
 ?>
 
@@ -192,7 +193,11 @@ Comments:<br />
 <textarea rows="5" cols="20" wrap="virtual" name="comments" id="comments" onkeyup="charCounter()" onfocus="resetText()">Enter Comments Here</textarea><br />
 Characters Remaining: <input type="text" name="limit" id="limit" size="3" readonly value="350"><br />
 
-<input type="submit" name="submit" id="submit" value="Add Rating">
+<input type="hidden" name="pid" id="pid" value="<?=$_GET['pid']?>" />
+
+<input type="hidden" name="oid" id="oid" value="<?=$ORG['oid']?>" />
+<input type="hidden" name="name" id="name" value="<?=$ORG['name']?>" />
+<input type="submit" name="submit" id="submit" value="Add Rating" />
 
 </form>
 

@@ -30,6 +30,7 @@ INSERT INTO organizations VALUES (1,"NIH","Bethesda","MD");
 CREATE TABLE ratings (
   rid tinyint(4) NOT NULL auto_increment,
   rdate date NOT NULL,
+  uid tinyint(4) NOT NULL,
   pid tinyint(4) NOT NULL,
   oid tinyint(4) NOT NULL,
   easiness tinyint(1) NOT NULL,
@@ -37,10 +38,11 @@ CREATE TABLE ratings (
   clarity tinyint(1) NOT NULL,
   interest tinyint(1) NOT NULL,
   comment varchar(350) NOT NULL,
+  active tinyint(1) NOT NULL,
   PRIMARY KEY (rid)
 );
 
-INSERT INTO ratings VALUES (1,"2010-08-24",1,1,4,3,4,3,"He was cool.");
+INSERT INTO ratings VALUES (1,"2010-08-24",1,1,1,4,3,4,3,"He was cool.",1);
 
 CREATE TABLE pis (
   pid tinyint(4) NOT NULL auto_increment,

@@ -29,8 +29,8 @@ $msg = "";
 
 $pid = mysql_real_escape_string($_GET['pid']);
 
-//find all ratings from this PI
-$sql = "SELECT rid,rdate,easiness,helpfulness,clarity,interest,comment FROM ratings WHERE pid='".$pid."'";
+//find all active ratings for this PI
+$sql = "SELECT rid,rdate,easiness,helpfulness,clarity,interest,comment FROM ratings WHERE pid='".$pid."' AND active='1'";
 
 if(!$res = mysql_query($sql)){
 	$msg .= mysql_error();
@@ -81,6 +81,8 @@ if ($count > 0) {
 } else {	//no ratings for this PI
 	echo "There are 0 ratings for this PI. Add one.";
 }
+
+echo "<br />Add a <a href=\"addrating.php?pid=".$pid."\">rating<a> for this PI.";
 
 echo $msg;
 

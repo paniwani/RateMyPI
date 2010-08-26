@@ -5,6 +5,7 @@ require("db.php");
 
 $msg = "";
 $mode = "";
+$count = 0;
 
 //search by organization
 if (isset($_GET['org_query'])) {
@@ -18,7 +19,6 @@ if (isset($_GET['org_query'])) {
 	if(!$res = mysql_query($sql)){
 		$msg .= mysql_error();
 	} else {
-		$count = 0;
 		
 		while($row = mysql_fetch_array($res)) {
 			$oid[$count] = $row['oid'];
@@ -37,23 +37,22 @@ if (isset($_GET['org_query'])) {
 	$pi = mysql_real_escape_string($_GET['pi_query']);
 	
 	$data = explode(" ", $pi);
+	
 	if (count($data) >= 2) {
-		$sql = "SELECT pid,fname,lname,oid,location FROM pis WHERE (fname LIKE '%".$data[0]."%' AND lname LIKE '%".$data[1]."%') OR (lname LIKE '%".$data[0]."%' AND fname LIKE '%".$data[1]."%')";
+		$sql = "SELECT pid,fname,lname,oid FROM pis WHERE (fname LIKE '%".$data[0]."%' AND lname LIKE '%".$data[1]."%') OR (lname LIKE '%".$data[0]."%' AND fname LIKE '%".$data[1]."%')";
 	} else if (count($data) == 1) {
-		$sql = "SELECT pid,fname,lname,oid,location FROM pis WHERE fname LIKE '%".$data[0]."%' OR lname LIKE '%".$data[0]."%'";
+		$sql = "SELECT pid,fname,lname,oid FROM pis WHERE fname LIKE '%".$data[0]."%' OR lname LIKE '%".$data[0]."%'";
 	}
 	
 	if(!$res = mysql_query($sql)){
 		$msg .= mysql_error();
 	} else {
-		$count = 0;
 		
 		while($row = mysql_fetch_array($res)) {
 			$pid[$count] = $row['pid'];
 			$fname[$count] = $row['fname'];
 			$lname[$count] = $row['lname'];
 			$oid[$count] = $row['oid'];
-			$location[$count] = $row['location'];
 			
 			//get organization info for each PI
 			$sql2 = "SELECT oid,name,city,region FROM organizations WHERE oid='".$oid[$count]."'";
@@ -132,6 +131,8 @@ if ($mode == "org") {
 if ($count == 0) {
 	echo "Search found 0 results.";
 }
+
+echo $msg;
 ?>
 </body>
 </html>
