@@ -1,12 +1,12 @@
 NOTES:
 
-activate.php 	- This script activates a new user’s account via email response.
+activate.php 	- Activates a new user’s account via email response.
 addpi.php		- Add's a PI given a oid and user input. Requires activation by admin.
 addrating.php	- Add's a rating given a pid. Requires activation by admin.
 checklogin.php  - Checks the current session and cookie for login variables. Creates $login boolean as flag.
 db.php			- Connects to and stores all database information.
 debug.php		- Outputs all variables in $GLOBALS.
-delete.sql		- Delets all SQL tables.
+delete.sql		- Deletes all SQL tables.
 forgot_pass.php - Resets a forgotten password.
 login.php 		- This script is responsible for verifying a users login credentials.
 logout.php 		- Logs a user out of the application and terminates session.
@@ -27,7 +27,7 @@ uid - user id
 
 QUESTIONS:
 
-- What if PI belongs to multiple organizations?
+- What if a PI belongs to multiple organizations?
 - Allow users to add organizations?
 
 TO DO:
@@ -43,13 +43,15 @@ TO DO:
 	- move header code up						x
 - create addrating.php							x
 	- add character counter						x
-	- make old ratings editable
 - ratings active/inactive						x					
-- admin page to review ratings
+- admin page to review ratings and PIs
+	- add PI and user entry dates
+- change all input tags to use < />
 - change organization search to dropdown
 - fix forget_pass
 - fix logout
 - reset ukey upon login
+- make old ratings editable
 
 FUTURE:
 - download NED data

@@ -50,6 +50,9 @@ for ($i = 0; $i < count($letters); $i++) {
 //get PIs from db based on oid and letter
 $sql = "SELECT pid,fname,lname,department,nratings,total_easiness,total_helpfulness,total_clarity FROM pis WHERE oid='".$oid."' AND lname LIKE '".$letter."%'";
 
+//make sure PIs are active
+$sql .= " AND active='1'";
+
 if(!$res = mysql_query($sql)){
 	$msg .= mysql_error();
 } else {
@@ -96,7 +99,7 @@ if ($count > 0) {
 } else {	//no results for this letter
 
 	//find total number of PIs with the oid
-	$sql = "SELECT oid FROM pis WHERE oid='".$oid."'";
+	$sql = "SELECT oid FROM pis WHERE oid='".$oid."' AND active='1'";
 	
 	if(!$res = mysql_query($sql)){
 		$msg .= mysql_error();

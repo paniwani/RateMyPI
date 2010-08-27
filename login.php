@@ -134,7 +134,7 @@ function checkform(pform1){
 		  
           <tr>
             <td>&nbsp;</td>
-            <td><input type="submit" name="submit" value="Login"></td>
+            <td><input type="submit" name="submit" value="Login" /></td>
             <td>&nbsp;</td>
           </tr>
         </table>

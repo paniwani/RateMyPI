@@ -44,6 +44,9 @@ if (isset($_GET['org_query'])) {
 		$sql = "SELECT pid,fname,lname,oid FROM pis WHERE fname LIKE '%".$data[0]."%' OR lname LIKE '%".$data[0]."%'";
 	}
 	
+	//make sure PIs are active
+	$sql .= " AND active='1'";
+	
 	if(!$res = mysql_query($sql)){
 		$msg .= mysql_error();
 	} else {

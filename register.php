@@ -70,7 +70,7 @@ $upass=mysql_real_escape_string($_POST['pass1']);
 $email=mysql_real_escape_string($_POST['email']);
 $ukey=md5(uniqid());
 
-$sql_ins="INSERT INTO users(uname,upass,ukey,email,level,active) values ('".$uname."','".md5($upass)."','".$ukey."','".$email."','".$level."','".$active."')";
+$sql_ins="INSERT INTO users(udate,uname,upass,ukey,email,level,active) values (CURDATE(),'".$uname."','".md5($upass)."','".$ukey."','".$email."','".$level."','".$active."')";
 $result = mysql_query($sql_ins);
 
 /* SECTION 3: User Notification */

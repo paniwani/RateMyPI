@@ -6,11 +6,9 @@ require("checklogin.php");
 
 //user must be logged in
 if (!$login):
-	echo "not logged in!";
-	//header("location: login.php");
+	header("location: login.php");
 elseif (!isset($_POST['submit']) && !isset($_GET['oid'])):
-	echo "didnt speciy oid!";
-	//header("location: main.php");
+	header("location: main.php");
 else:
 	
 $msg = "";
@@ -33,8 +31,8 @@ if (isset($_POST['submit'])) {
 	} else {
 	
 		//add the pi (inactive)
-		$sql = "INSERT INTO pis (uid,oid,department,fname,lname,active) VALUES ('";
-		$sql .= $_SESSION['uid']."','".$oid."','".$department."','".$fname."','".$lname."','0')";
+		$sql = "INSERT INTO pis (pdate,uid,oid,department,fname,lname,active) VALUES (";
+		$sql .= "CURDATE(),'".$_SESSION['uid']."','".$oid."','".$department."','".$fname."','".$lname."','0')";
 		
 		$res = mysql_query($sql) or die(mysql_error());
 
