@@ -26,7 +26,8 @@ CREATE TABLE organizations (
   PRIMARY KEY (oid)
 );
 
-INSERT INTO organizations VALUES (1,"NIH","Bethesda","MD");
+INSERT INTO organizations VALUES (1,"NIH-Bethesda","Bethesda","MD");
+INSERT INTO organizations VALUES (2,"NIH-Frederick","Frederick","MD");
 
 CREATE TABLE ratings (
   rid tinyint(4) NOT NULL auto_increment,

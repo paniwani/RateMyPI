@@ -28,7 +28,7 @@ $msg .="Invalid password.<br>";
 
 if(empty($msg)){
 
-$sql = "SELECT uid,uname,ukey,level FROM users WHERE email ='".$_POST['email']."'";
+$sql = "SELECT uid,uname,level,ukey FROM users WHERE email ='".$_POST['email']."'";
 $sql .= "AND upass ='".md5($_POST['upass'])."' AND active='1'";		//ensure user is active
 
 if(!$res = mysql_query($sql)){
@@ -47,13 +47,29 @@ $row = mysql_fetch_assoc($res);
 		unset($_SESSION['randval']);
 		unset($_SESSION['securimage_code_value']);
 		
-		//create cookie
-		if (isset($_POST['remember'])) {
-			setcookie('rmp-cookie', $row['uid']." ".$row['ukey'], 60*60*24*30+time() ); //expire in 1 month
+		if (isset($_POST['remember'])) { 
+			//update ukey for cookie
+			$ukey = md5(uniqid());
+			
+			$sql2="UPDATE users SET ukey='".$ukey."' WHERE uid = '".$row['uid']."'";
+			$res2 = mysql_query($sql2) or die("Error updating ukey. " . mysql_error());
+
+			if (mysql_affected_rows() != 1) { 
+				echo "Error updating ukey. Please check the link or contact the site admin.";
+			} else {
+				//update session
+				$_SESSION['ukey'] = $ukey;
+				
+				//delete any existing cookie
+				setcookie('rmp-cookie','',time()-3600);
+				
+				//create cookie
+				setcookie('rmp-cookie', $row['uid']." ".$row['ukey'], 60*60*24*30+time() ); //expire in 1 month
+			}
 		}
 		
-        //Now go to the main page
-        header('location: main.php');
+		//Now go to the main page
+		header('location: main.php');
 }else{
 
 $msg = "Your login details did not match";
@@ -113,7 +129,7 @@ function checkform(pform1){
 			if(isset($_POST['email'])){
 			echo $_POST['email'];
 			}
-			?>"></td>
+			?>" /></td>
             <td width="224"><input type="hidden" name="login" /></td>
           </tr>
           <tr>
@@ -122,7 +138,7 @@ function checkform(pform1){
 			if(isset($_POST['upass'])){
 			echo $_POST['upass'];
 			}
-			?>"></td>
+			?>" /></td>
             <td class="passcheck"><a href="forgot_pass.php">Forgot your password?</a>|<a href="register.php">Register</a> </td>
           </tr>
 		  

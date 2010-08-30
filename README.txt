@@ -44,15 +44,17 @@ TO DO:
 - create addrating.php							x
 	- add character counter						x
 - ratings active/inactive						x					
-- admin page to review ratings and PIs
-	- add PI and user entry dates
-- change all input tags to use < />
-- change organization search to dropdown
-- fix forget_pass
-- fix logout
-- reset ukey upon login
-- make old ratings editable
+- admin page to review ratings and PIs			x
+	- add PI and user entry dates				x
+- change all input tags to use < />				x
+- change organization search to dropdown		x
+- fix forget_pass								x
+- fix logout									x
+- reset ukey upon login							x
+
 
 FUTURE:
 - download NED data
 - create maintenance page
+- make old ratings editable
+- add change profile/password section

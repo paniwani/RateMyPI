@@ -153,11 +153,11 @@ return true
   <?php }?>
   <tr>
     <td width="156"><div align="left">Name</div></td>
-    <td width="594"><input name="uname" type="text" class="s300" size="40"></td>
+    <td width="594"><input name="uname" type="text" class="s300" size="40" /></td>
   </tr>
   <tr>
     <td><div align="left">Email</div></td>
-    <td><input name="email" type="text" class="s300" size="40"></td>
+    <td><input name="email" type="text" class="s300" size="40" /></td>
   </tr>
   <tr>
     <td><div align="left">Password</div></td>
@@ -166,19 +166,19 @@ return true
   </tr>
   <tr>
     <td ><div align="left">Confirm Password </div></td>
-    <td><input name="pass2" type="password" size="40"></td>
+    <td><input name="pass2" type="password" size="40" /></td>
   </tr>
   <input name="reg" type="hidden" value="reg" />
   
   <tr>
 	<td><div align="left">Enter Number</td>
-	<td><input name="number" type="text" id="number" size="40">
+	<td><input name="number" type="text" id="number" size="40" />
 	&nbsp;&nbsp;<img src="securimage/securimage_show.php?sid=<?php echo md5(uniqid(time())); ?>" id="image" align="absmiddle" /></td>
   </tr> 
   
   <tr>
     <td></td>
-    <td> <input name="submit" type="submit" value="Register"></td>
+    <td> <input name="submit" type="submit" value="Register" /></td>
   </tr>
 </table>
   </form>

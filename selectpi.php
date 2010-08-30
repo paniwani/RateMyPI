@@ -19,7 +19,6 @@ else:
 $msg ="";
 
 //get organization info
-
 $oid = mysql_real_escape_string($_GET['oid']);
 
 $sql = "SELECT oid,name,city,region FROM organizations WHERE oid ='".$oid."'";
@@ -106,8 +105,12 @@ if ($count > 0) {
 	} else {
 		$numpis = mysql_num_rows($res);
 	}
-
-	echo "<br/><br />Oops, we found ".$numpis." PIs from ".$ORG['name'].", none of which have a last name starting with the letter ".$letter.".<br/><br />Click on another letter to continue your search or <a href=\"addpi.php?oid=".$oid."\">add a PI</a> to rate them.";
+	
+	if ($numpis > 0) {
+		echo "<br/><br />Oops, we found ".$numpis." PIs from ".$ORG['name'].", none of which have a last name starting with the letter ".$letter.".<br/><br />Click on another letter to continue your search or <a href=\"addpi.php?oid=".$oid."\">add a PI</a> to rate them.";
+	} else {
+		echo "<br /><br />No PIs found for ".$ORG['name'].".";
+	}
 }
 
 

@@ -191,7 +191,7 @@ Rater Interest: <select name="interest" id="interest">
 
 Comments:<br />
 <textarea rows="5" cols="20" wrap="virtual" name="comments" id="comments" onkeyup="charCounter()" onfocus="resetText()">Enter Comments Here</textarea><br />
-Characters Remaining: <input type="text" name="limit" id="limit" size="3" readonly value="350"><br />
+Characters Remaining: <input type="text" name="limit" id="limit" size="3" readonly value="350" /><br />
 
 <input type="hidden" name="pid" id="pid" value="<?=$_GET['pid']?>" />
 

@@ -19,7 +19,7 @@ if ($login) {									//user must be logged in
 		$msg = "You must have administrator access to view this page. Please contact the site admin to request access.";
 	}
 } else {
-	$msg = "You must be logged in to see admin panel.<br /><a href=\"login.php\">Login</a>";
+	$msg = "You must be logged in to see the admin panel.<br /><a href=\"login.php\">Login</a>";
 }
 
 ?>

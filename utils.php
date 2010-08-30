@@ -26,13 +26,8 @@ function checkurl($url){
 function rangen(){
   $alphanum = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-  // generate the verication code
-  $rand = substr(str_shuffle($alphanum), 0, 5);
-
-  // create the hash for the random number and put it in the session
-  $_SESSION['randval'] = md5($rand);
-
-  return $rand;
+  // generate and return the verication code
+  return substr(str_shuffle($alphanum), 0, 10);
 }
 
 //send email using phpmailer with gmail
@@ -54,6 +49,8 @@ function send_email($email,$subject,$emsg) {
 	$mail->AltBody = $emsg; //Text Body
 	if(!$mail->Send()) {
 		echo "Mailer Error: " . $mail->ErrorInfo;
+	} else {
+		return true;
 	}
 }
 ?>

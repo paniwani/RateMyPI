@@ -7,30 +7,7 @@ $msg = "";
 $mode = "";
 $count = 0;
 
-//search by organization
-if (isset($_GET['org_query'])) {
-	$mode = "org";
-
-	//find organization id based on query
-	$org = mysql_real_escape_string($_GET['org_query']);
-
-	$sql = "SELECT oid,name,city,region FROM organizations WHERE name LIKE '%".$org."%'";
-
-	if(!$res = mysql_query($sql)){
-		$msg .= mysql_error();
-	} else {
-		
-		while($row = mysql_fetch_array($res)) {
-			$oid[$count] = $row['oid'];
-			$name[$count] = $row['name'];
-			$city[$count] = $row['city'];
-			$region[$count] = $row['region'];
-			
-			$count++;
-		}
-	}
-	
-} else if (isset($_GET['pi_query'])) {		//search by PI
+if (isset($_GET['pi_query'])) {		//search by PI
 	$mode = "pi";
 	
 	//find pi id based on query
@@ -77,6 +54,28 @@ if (isset($_GET['org_query'])) {
 		}
 	}
 
+} else if (isset($_GET['org_query'])) {		//search by organization
+	$mode = "org";
+
+	//find organization based on query
+	$oid = mysql_real_escape_string($_GET['org_query']);
+
+	//$sql = "SELECT oid,name,city,region FROM organizations WHERE name LIKE '%".$org."%'";
+	$sql = "SELECT oid,name,city,region FROM organizations WHERE oid='".$oid."'";
+	
+	if(!$res = mysql_query($sql)){
+		$msg .= mysql_error();
+	} else {
+		while($row = mysql_fetch_array($res)) {
+			$oid[$count] = $row['oid'];
+			$name[$count] = $row['name'];
+			$city[$count] = $row['city'];
+			$region[$count] = $row['region'];
+			
+			$count++;
+		}
+	}
+	
 } else {	//no query, return to main
 	header("location: main.php");
 }
@@ -91,44 +90,48 @@ if (isset($_GET['org_query'])) {
 require("checklogin.php");
 
 if ($mode == "org") {
-	echo "<table border=\"1\">";
-	
-	echo "<tr>";
-	echo "<th>Organization</th>";
-	echo "<th>City</th>";
-	echo "<th>Region</th>";
-	echo "</tr>";
-	
-	for ($i = 0; $i < $count; $i++) {
+	if ($count > 0) {
+		echo "<table border=\"1\">";
+		
 		echo "<tr>";
-		echo "<td><a href=\"selectpi.php?oid=".$oid[$i]."\">".$name[$i]."</a></td>";
-		echo "<td>".$city[$i]."</td>";
-		echo "<td>".$region[$i]."</td>";
+		echo "<th>Organization</th>";
+		echo "<th>City</th>";
+		echo "<th>Region</th>";
 		echo "</tr>";
+		
+		for ($i = 0; $i < $count; $i++) {
+			echo "<tr>";
+			echo "<td><a href=\"selectpi.php?oid=".$oid[$i]."\">".$name[$i]."</a></td>";
+			echo "<td>".$city[$i]."</td>";
+			echo "<td>".$region[$i]."</td>";
+			echo "</tr>";
+		}
+		
+		echo "</table>";
 	}
-	
-	echo "</table>";
 	
 } else if ($mode == "pi") {
-	echo "<table border=\"1\">";
-	
-	echo "<tr>";
-	echo "<th>PI Name</th>";
-	echo "<th>Organization Name</th>";
-	echo "<th>City</th>";
-	echo "<th>Region</th>";
-	echo "</tr>";
-	
-	for ($i = 0; $i < $count; $i++) {
+	if ($count > 0) {
+		echo "<table border=\"1\">";
+		
 		echo "<tr>";
-		echo "<td><a href=\"showratings.php?pid=".$pid[$i]."\">".$lname[$i].", ".$fname[$i]."</a></td>";
-		echo "<td><a href=\"selectpi.php?oid=".$oid[$i]."\">".$name[$i]."</a></td>";
-		echo "<td>".$city[$i]."</td>";
-		echo "<td>".$region[$i]."</td>";
+		echo "<th>PI Name</th>";
+		echo "<th>Organization Name</th>";
+		echo "<th>City</th>";
+		echo "<th>Region</th>";
 		echo "</tr>";
+		
+		for ($i = 0; $i < $count; $i++) {
+			echo "<tr>";
+			echo "<td><a href=\"showratings.php?pid=".$pid[$i]."\">".$lname[$i].", ".$fname[$i]."</a></td>";
+			echo "<td><a href=\"selectpi.php?oid=".$oid[$i]."\">".$name[$i]."</a></td>";
+			echo "<td>".$city[$i]."</td>";
+			echo "<td>".$region[$i]."</td>";
+			echo "</tr>";
+		}
+		
+		echo "</table>";
 	}
-	
-	echo "</table>";
 }
 
 if ($count == 0) {
@@ -136,6 +139,7 @@ if ($count == 0) {
 }
 
 echo $msg;
+
 ?>
 </body>
 </html>
