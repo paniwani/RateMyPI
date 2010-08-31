@@ -51,10 +51,15 @@ TO DO:
 - fix forget_pass								x
 - fix logout									x
 - reset ukey upon login							x
+- dynamic form validation for register pg		
+- set password max > 6 chars					x
+- flags for bad ratings
+- sorting of search results
+	- use page system
+- add change profile/password section
 
 
 FUTURE:
 - download NED data
 - create maintenance page
 - make old ratings editable
-- add change profile/password section
